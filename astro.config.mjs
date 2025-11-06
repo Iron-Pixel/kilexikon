@@ -1,10 +1,9 @@
 import { defineConfig } from 'astro/config';
-import { sitemap } from '@astrojs/sitemap'; // NEU: Sitemap-Modul importieren
+import sitemap from '@astrojs/sitemap'; 
 
 export default defineConfig({
   site: 'https://kilexikon.com',
   output: 'static',
   
-  // NEU: Integration aktivieren
   integrations: [sitemap()], 
 });
