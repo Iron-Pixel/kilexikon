@@ -1,0 +1,299 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout title="Begriff vorschlagen - KI-Lexikon">
+  <style>
+    .contribute-hero {
+      text-align: center;
+      padding: 40px 20px;
+      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      border-radius: 12px;
+      margin-bottom: 40px;
+    }
+    
+    .contribute-hero h1 {
+      font-size: 2.5rem;
+      color: #667eea;
+      margin-bottom: 15px;
+      font-weight: 700;
+    }
+    
+    .contribute-hero p {
+      font-size: 1.2rem;
+      color: #555;
+      max-width: 700px;
+      margin: 0 auto 10px auto;
+      line-height: 1.8;
+    }
+    
+    .form-container {
+      max-width: 700px;
+      margin: 0 auto;
+      background: #f9f9f9;
+      padding: 40px;
+      border-radius: 12px;
+    }
+    
+    .form-group {
+      margin-bottom: 25px;
+    }
+    
+    .form-group label {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: #333;
+    }
+    
+    .form-group input,
+    .form-group textarea {
+      width: 100%;
+      padding: 12px;
+      border: 2px solid #ddd;
+      border-radius: 6px;
+      font-size: 1rem;
+      font-family: inherit;
+      transition: border-color 0.3s;
+    }
+    
+    .form-group input:focus,
+    .form-group textarea:focus {
+      outline: none;
+      border-color: #667eea;
+    }
+    
+    .form-group textarea {
+      min-height: 120px;
+      resize: vertical;
+    }
+    
+    .checkbox-group {
+      margin: 20px 0;
+      padding: 20px;
+      background: white;
+      border-radius: 8px;
+    }
+    
+    .checkbox-item {
+      display: flex;
+      align-items: start;
+      margin-bottom: 15px;
+    }
+    
+    .checkbox-item input[type="checkbox"] {
+      width: auto;
+      margin-right: 10px;
+      margin-top: 4px;
+    }
+    
+    .checkbox-item label {
+      margin: 0;
+      font-weight: normal;
+      line-height: 1.6;
+    }
+    
+    .sub-field {
+      margin-left: 30px;
+      margin-top: 10px;
+    }
+    
+    .submit-btn {
+      background: #667eea;
+      color: white;
+      padding: 15px 40px;
+      border: none;
+      border-radius: 8px;
+      font-size: 1.1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.3s;
+      width: 100%;
+    }
+    
+    .submit-btn:hover {
+      background: #5568d3;
+      transform: translateY(-2px);
+    }
+    
+    .required {
+      color: #e74c3c;
+    }
+    
+    .info-box {
+      background: #e8f4f8;
+      border-left: 4px solid #667eea;
+      padding: 20px;
+      margin: 30px 0;
+      border-radius: 4px;
+    }
+    
+    .info-box p {
+      margin: 10px 0;
+      color: #555;
+      line-height: 1.8;
+    }
+    
+    @media (max-width: 768px) {
+      .form-container {
+        padding: 20px;
+      }
+      
+      .contribute-hero h1 {
+        font-size: 1.8rem;
+      }
+    }
+  </style>
+
+  <div class="contribute-hero">
+    <h1>Hilf mit, das KI-Lexikon zu erweitern!</h1>
+    <p>
+      Fehlt ein wichtiger Begriff? Hast du eine bessere Erklärung?
+    </p>
+    <p style="font-size: 1rem; opacity: 0.8;">
+      Gemeinsam machen wir das erste große deutschsprachige KI-Lexikon noch umfassender!
+    </p>
+  </div>
+
+  <div class="form-container">
+   <form action="https://formspree.io/f/xrbonane" method="POST" id="contribute-form">
+      <!-- Honeypot for spam protection -->
+      <input type="text" name="_gotcha" style="display:none">
+      
+<input type="hidden" name="_next" value="/begriff-vorschlagen/danke">
+
+      <div class="form-group">
+        <label for="term">
+          Begriff <span class="required">*</span>
+        </label>
+        <input 
+          type="text" 
+          id="term" 
+          name="begriff" 
+          required 
+          placeholder="z.B. Quantum Computing"
+        />
+      </div>
+      
+      <div class="form-group">
+        <label for="description">
+          Kurzbeschreibung / Quelle
+        </label>
+        <textarea 
+          id="description" 
+          name="beschreibung" 
+          placeholder="Optional: Wo hast du den Begriff gefunden? Warum ist er wichtig?"
+        ></textarea>
+      </div>
+      
+      <div class="form-group">
+        <label for="email">
+          E-Mail <span class="required">*</span>
+        </label>
+        <input 
+          type="email" 
+          id="email" 
+          name="email" 
+          required 
+          placeholder="Nur für Rückfragen, nicht öffentlich"
+        />
+        <small style="color: #666; font-size: 0.9rem;">Deine E-Mail wird nicht veröffentlicht</small>
+      </div>
+      
+      <div class="checkbox-group">
+        <div class="checkbox-item">
+          <input type="checkbox" id="want-credits" name="credits" value="ja">
+          <label for="want-credits">
+            <strong>Ich möchte in den Credits genannt werden</strong>
+          </label>
+        </div>
+        
+        <div class="sub-field">
+          <div class="form-group">
+            <label for="credit-name">Name für Nennung</label>
+            <input 
+              type="text" 
+              id="credit-name" 
+              name="credit_name" 
+              placeholder="Wie möchtest du genannt werden?"
+            />
+          </div>
+          
+          <div class="form-group">
+            <label for="website">Website (optional)</label>
+            <input 
+              type="url" 
+              id="website" 
+              name="website" 
+              placeholder="https://deine-website.de"
+            />
+            <small style="color: #666; font-size: 0.85rem;">
+              Wird mit rel="nofollow ugc" verlinkt
+            </small>
+          </div>
+        </div>
+      </div>
+      
+      <div class="checkbox-group">
+        <div class="checkbox-item">
+          <input type="checkbox" id="rights" name="rights" required>
+          <label for="rights">
+            <span class="required">*</span> Ich bestätige, dass mein Beitrag von der Redaktion geprüft, 
+            sprachlich angepasst und unter meinem Namen im Credits-Bereich genannt werden darf. 
+            Ich übertrage die einfachen Nutzungsrechte am Textbeitrag, redaktionelle Kürzung/Änderung vorbehalten.
+          </label>
+        </div>
+        
+        <div class="checkbox-item">
+          <input type="checkbox" id="privacy" name="privacy" required>
+          <label for="privacy">
+            <span class="required">*</span> Ich habe die <a href="/datenschutz" target="_blank">Datenschutzerklärung</a> gelesen.
+          </label>
+        </div>
+      </div>
+      
+      <button type="submit" class="submit-btn">
+        Begriff einreichen
+      </button>
+    </form>
+    
+    <div class="info-box">
+      <p><strong>Was passiert als Nächstes?</strong></p>
+      <p>
+        ✓ Wir prüfen deinen Vorschlag sorgfältig<br>
+        ✓ Bei Rückfragen melden wir uns per E-Mail<br>
+        ✓ Übernommene Begriffe erscheinen im nächsten Monats-Update<br>
+        ✓ Dein Name wird in den <a href="/credits">Credits</a> erwähnt (falls gewünscht)
+      </p>
+    </div>
+  </div>
+  
+  <script>
+    const form = document.getElementById('contribute-form');
+    
+    form?.addEventListener('submit', function(e) {
+      // Show success message after form submission
+      const formContainer = document.querySelector('.form-container');
+      
+      setTimeout(() => {
+        if (formContainer) {
+          formContainer.innerHTML = `
+            <div style="text-align: center; padding: 60px 20px;">
+              <div style="font-size: 4rem; margin-bottom: 20px;">✅</div>
+              <h2 style="color: #667eea; margin-bottom: 20px;">Vielen Dank!</h2>
+              <p style="font-size: 1.2rem; color: #555; margin-bottom: 15px;">
+                Danke, dass du mithilfst, dieses Lexikon weiter zu verbessern und zu vergrößern!
+              </p>
+              <p style="color: #666;">
+                Wir prüfen deinen Vorschlag und melden uns bei Rückfragen.
+              </p>
+              <p style="margin-top: 30px;">
+                <a href="/" style="color: #667eea; font-weight: 600;">← Zurück zur Startseite</a>
+              </p>
+            </div>
+          `;
+        }
+      }, 100);
+    });
+  </script>
+</Layout>

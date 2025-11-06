@@ -1,0 +1,231 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout title="Mitwirkende & Credits - KI-Lexikon">
+  <style>
+    .credits-hero {
+      text-align: center;
+      padding: 40px 20px;
+      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100());
+      border-radius: 12px;
+      margin-bottom: 40px;
+    }
+    
+    .credits-hero h1 {
+      font-size: 2.5rem;
+      color: #667eea;
+      margin-bottom: 15px;
+      font-weight: 700;
+    }
+    
+    .credits-hero p {
+      font-size: 1.2rem;
+      color: #555;
+      max-width: 800px;
+      margin: 0 auto;
+      line-height: 1.8;
+    }
+    
+    .credits-content {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    
+    .year-section {
+      margin: 40px 0;
+      padding: 30px;
+      background: #f9f9f9;
+      border-radius: 12px;
+    }
+    
+    .year-section h2 {
+      font-size: 2rem;
+      color: #764ba2;
+      margin-bottom: 25px;
+      border-bottom: 3px solid #667eea;
+      padding-bottom: 10px;
+    }
+    
+    .contributor {
+      margin: 20px 0;
+      padding: 20px;
+      background: white;
+      border-left: 4px solid #667eea;
+      border-radius: 4px;
+    }
+    
+    .contributor-name {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: #333;
+      margin-bottom: 8px;
+    }
+    
+    .contributor-count {
+      color: #667eea;
+      font-weight: 600;
+      margin-bottom: 10px;
+    }
+    
+    .contributor-terms {
+      color: #666;
+      line-height: 1.6;
+    }
+    
+    .contributor-website {
+      margin-top: 8px;
+    }
+    
+    .contributor-website a {
+      color: #667eea;
+      text-decoration: none;
+      font-size: 0.95rem;
+    }
+    
+    .contributor-website a:hover {
+      text-decoration: underline;
+    }
+    
+    .info-note {
+      background: #e8f4f8;
+      padding: 20px;
+      border-left: 4px solid #667eea;
+      border-radius: 4px;
+      margin: 30px 0;
+    }
+    
+    .info-note p {
+      margin: 0;
+      color: #555;
+      line-height: 1.6;
+    }
+    
+    .cta-box {
+      text-align: center;
+      padding: 40px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border-radius: 12px;
+      margin-top: 50px;
+    }
+    
+    .cta-box h3 {
+      font-size: 1.8rem;
+      margin-bottom: 15px;
+    }
+    
+    .cta-box p {
+      font-size: 1.1rem;
+      margin-bottom: 25px;
+      opacity: 0.95;
+    }
+    
+    .cta-btn {
+      display: inline-block;
+      padding: 15px 30px;
+      background: white;
+      color: #667eea;
+      text-decoration: none;
+      border-radius: 8px;
+      font-weight: 700;
+      transition: all 0.3s;
+    }
+    
+    .cta-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+      text-decoration: none;
+    }
+    
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: #999;
+    }
+    
+    .empty-state-icon {
+      font-size: 4rem;
+      margin-bottom: 20px;
+    }
+    
+    @media (max-width: 768px) {
+      .credits-hero h1 {
+        font-size: 1.8rem;
+      }
+      
+      .year-section {
+        padding: 20px;
+      }
+    }
+  </style>
+
+  <div class="credits-hero">
+    <h1>Mitwirkende am KI-Lexikon</h1>
+    <p>
+      Dieses Lexikon wächst durch EUCH! Vielen Dank an alle, die mit ihren Vorschlägen 
+      dazu beitragen, dass das erste große deutschsprachige KI-Lexikon noch umfassender 
+      und aktueller wird.
+    </p>
+  </div>
+
+  <div class="credits-content">
+    <div class="info-note">
+      <p>
+        <strong>Hinweis:</strong> Externe Links zu Websites werden aus Transparenzgründen mit 
+        <code>rel="nofollow ugc"</code> verlinkt. Dies entspricht den Best Practices für 
+        nutzergenerierte Inhalte.
+      </p>
+    </div>
+    
+    <!-- 2025 Section -->
+    <div class="year-section">
+      <h2>2025</h2>
+      
+      <!-- Placeholder for first contributors -->
+      <div class="empty-state">
+        <div class="empty-state-icon">🌱</div>
+        <p style="font-size: 1.2rem; color: #666;">
+          Sei der/die Erste, der/die einen Begriff beiträgt!
+        </p>
+        <p style="color: #999;">
+          Die ersten Community-Beiträge werden hier erscheinen.
+        </p>
+      </div>
+      
+      <!-- Example structure (comment out when empty):
+      <div class="contributor">
+        <div class="contributor-name">Max Mustermann</div>
+        <div class="contributor-count">(3 Begriffe)</div>
+        <div class="contributor-terms">
+          API, Transformer, Neural Network
+        </div>
+        <div class="contributor-website">
+          <a href="https://example.com" rel="nofollow ugc" target="_blank">
+            → Website
+          </a>
+        </div>
+      </div>
+      -->
+    </div>
+    
+    <div class="cta-box">
+      <h3>Du auch dabei sein?</h3>
+      <p>
+        Fehlt ein wichtiger Begriff? Hilf uns, das Lexikon zu verbessern!
+      </p>
+      <a href="/begriff-vorschlagen" class="cta-btn">
+        Jetzt Begriff vorschlagen
+      </a>
+    </div>
+    
+    <div style="margin-top: 40px; text-align: center; color: #666;">
+      <p>
+        <strong>Monatliche Updates:</strong> Neue Beiträge werden gesammelt und monatlich hinzugefügt.
+      </p>
+      <p>
+        Aktuelle Änderungen findest du im <a href="/changelog">Changelog</a>.
+      </p>
+    </div>
+  </div>
+</Layout>

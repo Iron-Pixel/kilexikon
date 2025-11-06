@@ -1,0 +1,209 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout title="Changelog - Änderungsprotokoll | KI-Lexikon">
+  <style>
+    .changelog-hero {
+      text-align: center;
+      padding: 40px 20px;
+      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      border-radius: 12px;
+      margin-bottom: 40px;
+    }
+    
+    .changelog-hero h1 {
+      font-size: 2.5rem;
+      color: #667eea;
+      margin-bottom: 15px;
+      font-weight: 700;
+    }
+    
+    .changelog-hero p {
+      font-size: 1.1rem;
+      color: #555;
+      max-width: 700px;
+      margin: 0 auto;
+    }
+    
+    .changelog-content {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    
+    .update-section {
+      margin: 30px 0;
+      padding: 30px;
+      background: white;
+      border-radius: 12px;
+      border-left: 5px solid #667eea;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
+    
+    .update-date {
+      font-size: 1.8rem;
+      color: #764ba2;
+      font-weight: 700;
+      margin-bottom: 20px;
+    }
+    
+    .update-category {
+      margin: 20px 0;
+    }
+    
+    .update-category h3 {
+      font-size: 1.2rem;
+      color: #667eea;
+      margin-bottom: 10px;
+      font-weight: 600;
+    }
+    
+    .update-list {
+      list-style: none;
+      padding: 0;
+    }
+    
+    .update-list li {
+      padding: 8px 0 8px 25px;
+      position: relative;
+      color: #555;
+    }
+    
+    .update-list li:before {
+      content: "→";
+      position: absolute;
+      left: 0;
+      color: #667eea;
+      font-weight: 700;
+    }
+    
+    .update-list li a {
+      color: #667eea;
+      text-decoration: none;
+      font-weight: 600;
+    }
+    
+    .update-list li a:hover {
+      text-decoration: underline;
+    }
+    
+    .stats-box {
+      background: #f9f9f9;
+      padding: 20px;
+      border-radius: 8px;
+      margin: 20px 0;
+      text-align: center;
+    }
+    
+    .stats-box strong {
+      font-size: 2rem;
+      color: #667eea;
+      display: block;
+      margin-bottom: 5px;
+    }
+    
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      background: #f9f9f9;
+      border-radius: 12px;
+    }
+    
+    .empty-state-icon {
+      font-size: 4rem;
+      margin-bottom: 20px;
+    }
+    
+    @media (max-width: 768px) {
+      .changelog-hero h1 {
+        font-size: 1.8rem;
+      }
+      
+      .update-section {
+        padding: 20px;
+      }
+    }
+  </style>
+
+  <div class="changelog-hero">
+    <h1>Änderungsprotokoll</h1>
+    <p>
+      Alle Updates, neuen Begriffe und Verbesserungen am KI-Lexikon im Überblick.
+    </p>
+  </div>
+
+  <div class="changelog-content">
+    <!-- November 2025 - Initial Launch -->
+    <div class="update-section">
+      <div class="update-date">November 2025</div>
+      
+      <div class="update-category">
+        <h3>🚀 Launch</h3>
+        <p style="color: #555; line-height: 1.8;">
+          Das erste große deutschsprachige KI-Lexikon geht online!
+        </p>
+      </div>
+      
+      <div class="stats-box">
+        <strong>4.736</strong>
+        <span style="color: #666;">KI-Begriffe beim Start</span>
+      </div>
+      
+      <div class="update-category">
+        <h3>✨ Features</h3>
+        <ul class="update-list">
+          <li>Vollständige Suchfunktion mit Fuzzy-Search</li>
+          <li>Alphabetische Navigation (A-Z)</li>
+          <li>SEO-optimiert mit strukturierten Daten</li>
+          <li>Community-System: Jeder kann Begriffe vorschlagen</li>
+          <li>Credits-Seite für Mitwirkende</li>
+          <li>Monatliches Update-System</li>
+        </ul>
+      </div>
+    </div>
+    
+    <!-- Future updates will be added here -->
+    <div class="empty-state">
+      <div class="empty-state-icon">📅</div>
+      <p style="font-size: 1.2rem; color: #666; margin-bottom: 15px;">
+        Weitere Updates folgen monatlich
+      </p>
+      <p style="color: #999;">
+        Neue Begriffe und Verbesserungen werden hier dokumentiert.
+      </p>
+      <p style="margin-top: 25px;">
+        <a href="/begriff-vorschlagen" style="color: #667eea; font-weight: 600;">
+          → Begriff vorschlagen
+        </a>
+      </p>
+    </div>
+    
+    <!-- Template for future updates:
+    <div class="update-section">
+      <div class="update-date">Dezember 2025</div>
+      
+      <div class="stats-box">
+        <strong>+12</strong>
+        <span style="color: #666;">Neue Begriffe</span>
+      </div>
+      
+      <div class="update-category">
+        <h3>➕ Neu hinzugefügt</h3>
+        <ul class="update-list">
+          <li><a href="/begriff/quantum-computing">Quantum Computing</a></li>
+          <li><a href="/begriff/edge-ai">Edge AI</a></li>
+          <li><a href="/begriff/multimodal-learning">Multimodal Learning</a></li>
+        </ul>
+      </div>
+      
+      <div class="update-category">
+        <h3>🔄 Aktualisiert</h3>
+        <ul class="update-list">
+          <li><a href="/begriff/api">API</a> – Definition erweitert</li>
+          <li><a href="/begriff/transformer">Transformer</a> – Beispiele hinzugefügt</li>
+        </ul>
+      </div>
+    </div>
+    -->
+  </div>
+</Layout>

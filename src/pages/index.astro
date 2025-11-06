@@ -1,0 +1,154 @@
+---
+import Layout from '../layouts/Layout.astro';
+import termsData from '../data/lexikon-data.json';
+
+// Group terms by first letter
+const termsByLetter = termsData.reduce((acc, term) => {
+  const letter = term.category;
+  if (!acc[letter]) {
+    acc[letter] = [];
+  }
+  acc[letter].push(term);
+  return acc;
+}, {} as Record<string, typeof termsData>);
+
+const letters = Object.keys(termsByLetter).sort();
+const totalTerms = termsData.length;
+---
+
+<Layout title="KI-Lexikon - Alle KI-Begriffe von A-Z">
+  <div class="stats">
+    <div class="stats-number">{totalTerms}</div>
+    <div class="stats-label">KI-Begriffe verständlich erklärt</div>
+  </div>
+  
+  <div class="search-box">
+    <input 
+      type="text" 
+      id="search-input" 
+      placeholder="Begriff suchen... (z.B. 'Machine Learning', 'Transformer', 'API')"
+      autocomplete="off"
+    />
+  </div>
+  
+  <nav class="alphabet-nav" aria-label="Alphabetische Navigation">
+    {letters.map(letter => (
+      <a href={`#${letter}`} title={`Zu Buchstabe ${letter} springen`}>{letter}</a>
+    ))}
+  </nav>
+  
+  <div id="results-container">
+    {letters.map(letter => (
+      <section id={letter} style="margin-bottom: 40px;">
+        <h2 class="section-title">{letter}</h2>
+        <ul class="term-list">
+          {termsByLetter[letter].map(term => (
+            <li class="term-item">
+              <a href={`/begriff/${term.slug}`}>
+                <div class="term-title">{term.term}</div>
+                <div class="term-definition">
+                  {term.definition.length > 200 
+                    ? term.definition.slice(0, 200) + '...'
+                    : term.definition
+                  }
+                </div>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </section>
+    ))}
+  </div>
+  
+  <script>
+    // @ts-nocheck
+    import Fuse from 'fuse.js';
+    
+    const termsData = await import('../data/lexikon-data.json').then(m => m.default);
+    
+    const fuse = new Fuse(termsData, {
+      keys: ['term', 'definition'],
+      threshold: 0.3,
+      includeScore: true,
+      ignoreLocation: true,
+    });
+    
+    const searchInput = document.getElementById('search-input') as HTMLInputElement;
+    const resultsContainer = document.getElementById('results-container') as HTMLElement;
+    const originalContent = resultsContainer.innerHTML;
+    
+    let debounceTimer: ReturnType<typeof setTimeout>;
+    
+    searchInput.addEventListener('input', (e) => {
+      clearTimeout(debounceTimer);
+      
+      debounceTimer = setTimeout(() => {
+        const query = (e.target as HTMLInputElement).value;
+        
+        if (!query || query.length < 2) {
+          resultsContainer.innerHTML = originalContent;
+          return;
+        }
+        
+        const results = fuse.search(query);
+        
+        if (results.length === 0) {
+          resultsContainer.innerHTML = `
+            <div style="text-align: center; padding: 60px 20px;">
+              <p style="font-size: 1.2rem; color: #999; margin-bottom: 10px;">
+                Keine Ergebnisse für "${query}"
+              </p>
+              <p style="color: #aaa;">
+                Versuche es mit einem anderen Begriff
+              </p>
+            </div>
+          `;
+          return;
+        }
+        
+        const html = `
+          <section>
+            <h2 class="section-title">
+              Suchergebnisse (${results.length})
+            </h2>
+            <ul class="term-list">
+              ${results.slice(0, 50).map(result => `
+                <li class="term-item">
+                  <a href="/begriff/${result.item.slug}">
+                    <div class="term-title">${result.item.term}</div>
+                    <div class="term-definition">
+                      ${result.item.definition.length > 200 
+                        ? result.item.definition.slice(0, 200) + '...'
+                        : result.item.definition
+                      }
+                    </div>
+                  </a>
+                </li>
+              `).join('')}
+            </ul>
+            ${results.length > 50 ? `
+              <p style="text-align: center; color: #666; margin-top: 20px;">
+                Zeige erste 50 von ${results.length} Ergebnissen
+              </p>
+            ` : ''}
+          </section>
+        `;
+        
+        resultsContainer.innerHTML = html;
+      }, 300);
+    });
+  </script>
+  
+  <div style="margin-top: 60px; padding: 40px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 12px; color: white; text-align: center;">
+    <h2 style="font-size: 2rem; margin-bottom: 15px; color: white;">🌱 Wachse mit uns!</h2>
+    <p style="font-size: 1.2rem; margin-bottom: 10px; opacity: 0.95;">
+      Das KI-Lexikon lebt von der Community.
+    </p>
+    <p style="font-size: 1.1rem; margin-bottom: 25px; opacity: 0.9;">
+      Fehlt ein wichtiger Begriff? Hast du eine bessere Erklärung?
+    </p>
+    <a href="/begriff-vorschlagen" style="display: inline-block; padding: 15px 30px; background: white; color: #667eea; text-decoration: none; border-radius: 8px; font-weight: 700; font-size: 1.1rem;">
+      → Hilf uns, das Lexikon zu verbessern!
+    </a>
+  </div>
+</Layout>

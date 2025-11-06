@@ -1,0 +1,62 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import termsData from '../../data/lexikon-data.json';
+
+export async function getStaticPaths() {
+  return termsData.map(term => ({
+    params: { slug: term.slug },
+    props: { term },
+  }));
+}
+
+const { term } = Astro.props;
+const metaDescription = term.definition.length > 155 
+  ? term.definition.slice(0, 152) + '...'
+  : term.definition;
+---
+
+<Layout 
+  title={`${term.term} - KI-Lexikon`}
+  description={metaDescription}
+>
+  <a href="/" class="back-link">← Zurück zur Übersicht</a>
+  
+  <article itemscope itemtype="https://schema.org/DefinedTerm">
+    <h1 style="font-size: 2.5rem; margin-bottom: 20px; color: #667eea; font-weight: 700;" itemprop="name">
+      {term.term}
+    </h1>
+    
+    <div class="term-detail">
+      <p itemprop="description">
+        {term.definition}
+      </p>
+    </div>
+    
+    <div class="meta-info">
+      <p>
+        <strong>Kategorie:</strong> {term.category} | 
+        <strong>Quelle:</strong> Das große KI-Lexikon von David Mirga
+      </p>
+    </div>
+  </article>
+  
+  <!-- JSON-LD structured data for SEO -->
+  <script type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "DefinedTerm",
+    "name": term.term,
+    "description": term.definition,
+    "identifier": term.slug,
+    "inDefinedTermSet": {
+      "@type": "DefinedTermSet",
+      "name": "KI-Lexikon",
+      "description": "Das erste deutschsprachige KI-Lexikon mit über 4700 Begriffen",
+      "url": "https://kilexikon.com",
+      "publisher": {
+        "@type": "Person",
+        "name": "David Mirga",
+        "url": "https://davidmirga.com"
+      }
+    }
+  })} />
+</Layout>

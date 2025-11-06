@@ -1,0 +1,324 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout title="Über den Autor - David Mirga | KI-Lexikon">
+  <style>
+    .hero-section {
+      text-align: center;
+      padding: 40px 20px;
+      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      border-radius: 12px;
+      margin-bottom: 50px;
+    }
+    
+    .hero-title {
+      font-size: 2.5rem;
+      color: #667eea;
+      margin-bottom: 10px;
+      font-weight: 700;
+    }
+    
+    .hero-subtitle {
+      font-size: 1.3rem;
+      color: #666;
+      margin-bottom: 20px;
+    }
+    
+    .social-links {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      margin-top: 20px;
+      flex-wrap: wrap;
+    }
+    
+    .social-link {
+      padding: 10px 20px;
+      background: #667eea;
+      color: white;
+      border-radius: 6px;
+      text-decoration: none;
+      font-weight: 600;
+      transition: all 0.3s;
+    }
+    
+    .social-link:hover {
+      background: #5568d3;
+      transform: translateY(-2px);
+      text-decoration: none;
+    }
+    
+    .book-section {
+      background: #f9f9f9;
+      padding: 40px;
+      border-radius: 12px;
+      margin: 40px 0;
+    }
+    
+    .book-showcase {
+      display: grid;
+      grid-template-columns: 300px 1fr;
+      gap: 40px;
+      align-items: start;
+      margin-top: 30px;
+    }
+    
+    .book-cover {
+      width: 100%;
+      border-radius: 8px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    }
+    
+    .book-info h3 {
+      font-size: 1.8rem;
+      color: #667eea;
+      margin-bottom: 15px;
+    }
+    
+    .book-info p {
+      line-height: 1.8;
+      margin-bottom: 15px;
+      color: #555;
+    }
+    
+    .amazon-button {
+      display: inline-block;
+      padding: 15px 30px;
+      background: #FF9900;
+      color: white;
+      text-decoration: none;
+      border-radius: 6px;
+      font-weight: 700;
+      font-size: 1.1rem;
+      margin-top: 20px;
+      transition: all 0.3s;
+    }
+    
+    .amazon-button:hover {
+      background: #e88900;
+      transform: translateY(-2px);
+      text-decoration: none;
+      box-shadow: 0 5px 15px rgba(255, 153, 0, 0.3);
+    }
+    
+    .content-section {
+      margin: 40px 0;
+    }
+    
+    .content-section h2 {
+      font-size: 2rem;
+      color: #667eea;
+      margin-bottom: 20px;
+      border-bottom: 3px solid #667eea;
+      padding-bottom: 10px;
+    }
+    
+    .content-section h3 {
+      font-size: 1.5rem;
+      color: #764ba2;
+      margin: 30px 0 15px 0;
+    }
+    
+    .content-section p {
+      line-height: 1.9;
+      margin-bottom: 15px;
+      color: #444;
+      text-align: justify;
+    }
+    
+    .content-section ul {
+      margin: 15px 0 15px 30px;
+      line-height: 1.9;
+    }
+    
+    .content-section li {
+      margin-bottom: 10px;
+      color: #555;
+    }
+    
+    @media (max-width: 768px) {
+      .book-showcase {
+        grid-template-columns: 1fr;
+        gap: 20px;
+      }
+      
+      .hero-title {
+        font-size: 1.8rem;
+      }
+      
+      .book-section {
+        padding: 20px;
+      }
+    }
+  </style>
+
+  <div class="hero-section">
+    <h1 class="hero-title">David Mirga</h1>
+    <p class="hero-subtitle">Diplomierter KI-Manager & Autor</p>
+    <p style="color: #666; max-width: 700px; margin: 0 auto;">
+      Einer der sichtbarsten KI-Generalisten im deutschsprachigen Raum
+    </p>
+    <div class="social-links">
+      <a href="https://www.linkedin.com/in/david-mirga-847336134/" target="_blank" rel="noopener" class="social-link">
+        LinkedIn
+      </a>
+      <a href="https://davidmirga.com" target="_blank" rel="noopener" class="social-link">
+        davidmirga.com
+      </a>
+    </div>
+  </div>
+
+  <div class="book-section">
+    <h2 style="font-size: 2rem; color: #667eea; text-align: center; margin-bottom: 30px;">
+      Das Buch zum Lexikon
+    </h2>
+    <div class="book-showcase">
+      <div>
+        <img src="/cover-lexikon.jpg" alt="Das erste große deutschsprachige KI-Lexikon" class="book-cover" />
+      </div>
+      <div class="book-info">
+        <h3>Das erste große deutschsprachige KI-Lexikon</h3>
+        <p><strong>5.000 Begriffe der Künstlichen Intelligenz verständlich erklärt</strong></p>
+        <p>
+          Das AI-Wörterbuch für Beruf und Alltag – Ein umfassendes Nachschlagewerk, das alle Bereiche rund um KI abdeckt: 
+          Foto, Video, Robotik, Agenten, Automatisation, AI Act, Machine Learning und vieles mehr.
+        </p>
+        <p>
+          Die Begriffe sind so erklärt, dass sowohl Einsteiger als auch Fortgeschrittene davon profitieren können. 
+          Eine praktische Hilfestellung für alle, die im KI-Zeitalter den Überblick behalten wollen.
+        </p>
+        <a href="https://amzn.eu/d/haaOpPf" target="_blank" rel="noopener" class="amazon-button">
+          📚 Bei Amazon kaufen
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <article class="content-section">
+    <h2>Vorwort</h2>
+    <p>
+      Künstliche Intelligenz verändert unsere Welt in einem Tempo, das selbst Experten manchmal den Atem raubt. 
+      Mit jeder neuen Entwicklung entstehen Begriffe, die gestern noch unbekannt waren und heute bereits zum Alltag gehören. 
+      Wer soll da noch den Überblick behalten?
+    </p>
+    <p>
+      Warum in dieser Zeit noch Bücher schreiben, wo fast niemand mehr Bücher liest, hat ein Bekannter zu mir gemeint? 
+      Und vor allem: wofür ein Wörterbuch, wenn wir doch jeden Begriff im Internet finden können? So etwas wird wahrscheinlich 
+      in der Masse und Flut von täglichen Buchveröffentlichungen und Content untergehen. Ja, mag sein. Offen gesagt habe ich 
+      mir diese Fragen nie gestellt. Ich wollte einen Ort haben, wo viele Begriffe gesammelt vorliegen und auch jeder darauf 
+      zugreifen kann – eine Erweiterung für mein KI/AI-Buch für Anfänger. Hier ist es:
+    </p>
+    <p><strong>Das erste große deutschsprachige KI-Lexikon / Wörterbuch.</strong></p>
+    <p>
+      Dieses Wörterbuch soll eine praktische Hilfestellung bieten, falls sie mal benötigt wird. Es deckt alle Bereiche rund um 
+      KI ab: ob Foto, Video, Robotik, Agenten, Automatisation, AI Act, Machine Learning und viele mehr. Die Begriffe sind so 
+      erklärt, dass sowohl Einsteiger als auch Fortgeschrittene davon profitieren können.
+    </p>
+  </article>
+
+  <article class="content-section">
+    <h2>Über David Mirga</h2>
+    <p>
+      David Mirga, diplomierter KI-Manager aus Wien und Autor des ersten deutschen KI-Lexikons mit über 5.000 Begriffen, 
+      gilt als einer der sichtbarsten KI-Generalisten im deutschsprachigen Raum.
+    </p>
+    <p>
+      Seit über 20 Jahren arbeitet er im digitalen Marketing und Recruiting – lange genug, um zu wissen: Jede neue 
+      Technologie löst zuerst Angst aus, bevor sie zum Werkzeug wird.
+    </p>
+    <p>
+      Seit 2022 beschäftigt er sich intensiv mit Künstlicher Intelligenz – nicht theoretisch, sondern praktisch. 
+      Über 20 internationale Zertifizierungen, tägliches Testing aktueller Tools und das Studium globaler KI-Strategien 
+      von CEOs und CAIOs haben seinen Blick geschärft: für reale Chancen, aber auch für die typischen Fehler, wenn 
+      Unternehmen KI unüberlegt einführen.
+    </p>
+    <p>
+      Als neutraler Berater begleitet er Unternehmen, Teams und Einzelpersonen dabei, KI schrittweise und sinnvoll zu 
+      integrieren – mit Fokus auf Klarheit statt Chaos. Er verzichtet bewusst auf Produktverkäufe und arbeitet unabhängig, 
+      mit einem Ziel: Menschen die Angst vor KI zu nehmen – Schritt für Schritt, ohne Überforderung.
+    </p>
+    <p>
+      Seit über zwei Jahren teilt Mirga regelmäßig auf LinkedIn praxisnahe Artikel zu KI-Workflows, Use Cases und 
+      Strategien – oft abseits des Hypes, aber immer mit dem Anspruch, das Thema verständlich und anwendbar zu machen.
+    </p>
+
+    <h3>Seine Bücher</h3>
+    <ul>
+      <li>
+        <strong>Digitales Recruiting kinderleicht</strong> (2023/24) – Praxishandbuch für moderne Personalgewinnung.
+      </li>
+      <li>
+        <strong>KI – endlich einfach erklärt</strong> (2024/25, 2. Ausgabe) – für alle, die KI wirklich verstehen wollen.
+      </li>
+      <li>
+        <strong>Das erste große deutschsprachige KI-Lexikon</strong> (2025) – Nachschlagewerk für alle Bereiche 
+        der Künstlichen Intelligenz.
+      </li>
+      <li>
+        <strong>Der ultimative KI-Kompass</strong> (2025) – das Praxisbuch für alle, die relevant bleiben wollen.
+      </li>
+    </ul>
+
+    <h3>Seine Arbeitsweise</h3>
+    <ul>
+      <li><strong>Objektive KI-Bewertungen</strong> ohne Bindung an Anbieter</li>
+      <li><strong>Mitarbeiterschulungen</strong> für den rechtskonformen Einsatz nach dem AI Act</li>
+      <li><strong>Prozessoptimierung,</strong> bei der KI als Werkzeug dient – nicht als Ersatz für Menschen</li>
+    </ul>
+
+    <h3>Seine Überzeugung</h3>
+    <p style="font-size: 1.2rem; font-style: italic; color: #667eea; margin: 20px 0;">
+      „KI ersetzt keine Mitarbeiter. Sie macht sie leistungsfähiger. Der Mensch mit KI – das ist die Zukunft."
+    </p>
+
+    <p>
+      <strong>Spezialisierung:</strong> KI-Beratung, Digitale Transformation, Social Recruiting, Prozessoptimierung
+    </p>
+  </article>
+  
+  <article class="content-section">
+    <h2>Ein lebendiges Projekt</h2>
+    <p>
+      Es werden in dieser ersten Fassung sicher einige wichtige Wörter fehlen. Die KI-Welt entwickelt sich zu schnell, 
+      als dass ein einzelnes Buch alles erfassen könnte. Deshalb bitte und ermutige ich jeden, der von diesem Projekt weiß: 
+      Schreibt mich auf Social Media an! Schickt mir Begriffe, von denen ihr meint, dass sie fehlen und definitiv in ein 
+      Wörterbuch über KI gehören.
+    </p>
+    <p>
+      Wer mitschreibt und mit Credits erwähnt werden möchte, sollte das ebenfalls mitteilen. Ich erwähne sehr gerne jeden, 
+      der auch nur ein Wort hinzufügt, mit Credits. Allerdings basiert der Beitrag auf freiwilliger Hilfe – es können keine 
+      monetären oder rechtlichen Ansprüche geltend gemacht werden. Genau so werden wir mit der Zeit zusammen ein umfassendes 
+      Werk schaffen.
+    </p>
+    <p>
+      Das Einzige, was mir wirklich wichtig ist: Wenn du dieses Lexikon benutzt, gib mir Credits und erwähne mich auf 
+      Social Media oder über eine Bewertung auf Amazon – darüber würde ich mich sehr freuen!
+    </p>
+    
+    <div style="text-align: center; margin: 40px 0; padding: 30px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 12px; color: white;">
+      <h3 style="font-size: 1.8rem; margin-bottom: 15px;">🚀 Mach mit!</h3>
+      <p style="font-size: 1.1rem; margin-bottom: 25px; opacity: 0.95;">
+        Hilf uns, das KI-Lexikon noch besser zu machen!
+      </p>
+      <div style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap;">
+        <a href="/begriff-vorschlagen" style="display: inline-block; padding: 12px 25px; background: white; color: #667eea; text-decoration: none; border-radius: 6px; font-weight: 600;">
+          Begriff vorschlagen
+        </a>
+        <a href="https://amzn.eu/d/haaOpPf" target="_blank" rel="noopener" style="display: inline-block; padding: 12px 25px; background: rgba(255,255,255,0.2); color: white; text-decoration: none; border-radius: 6px; font-weight: 600;">
+          Auf Amazon bewerten
+        </a>
+      </div>
+    </div>
+  </article>
+
+  <div style="text-align: center; margin: 60px 0; padding: 40px; background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); border-radius: 12px;">
+    <h2 style="font-size: 2rem; color: #667eea; margin-bottom: 20px;">Interesse am Buch?</h2>
+    <p style="font-size: 1.1rem; margin-bottom: 30px; color: #555;">
+      Das erste große deutschsprachige KI-Lexikon mit über 5.000 Begriffen
+    </p>
+    <a href="https://amzn.eu/d/haaOpPf" target="_blank" rel="noopener" class="amazon-button">
+      📚 Jetzt bei Amazon bestellen
+    </a>
+  </div>
+</Layout>
