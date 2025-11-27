@@ -1,4 +1,5 @@
 ---
+import CookieBanner from '../components/CookieBanner.astro';
 interface Props {
   title: string;
   description?: string;
@@ -386,5 +387,6 @@ const { title, description = "Das erste deutschsprachige KI-Lexikon mit über 47
         🤝 <a href="/begriff-vorschlagen" style="font-weight: 600;">Jetzt mithelfen</a>
       </p>
     </footer>
+        <CookieBanner />
   </body>
 </html>
