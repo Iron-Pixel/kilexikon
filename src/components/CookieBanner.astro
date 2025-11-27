@@ -70,14 +70,18 @@
 <script>
   // Prüfe ob User schon zugestimmt hat
   const cookieAccepted = localStorage.getItem('cookieAccepted');
+  const banner = document.getElementById('cookie-banner');
+  const acceptBtn = document.getElementById('accept-cookies');
   
-  if (!cookieAccepted) {
-    document.getElementById('cookie-banner').classList.add('show');
+  if (!cookieAccepted && banner) {
+    banner.classList.add('show');
   }
   
   // Button-Klick Handler
-  document.getElementById('accept-cookies').addEventListener('click', () => {
-    localStorage.setItem('cookieAccepted', 'true');
-    document.getElementById('cookie-banner').classList.remove('show');
-  });
+  if (acceptBtn && banner) {
+    acceptBtn.addEventListener('click', () => {
+      localStorage.setItem('cookieAccepted', 'true');
+      banner.classList.remove('show');
+    });
+  }
 </script>
