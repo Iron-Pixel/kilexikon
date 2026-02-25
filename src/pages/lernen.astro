@@ -1,0 +1,882 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout
+  title="Vokabel-Trainer | KI-Lexikon"
+  description="Lerne KI-Fachvokabeln interaktiv: ISO 42001 Fachbegriffe und Business English mit Audio-Aussprache und automatischer Fehlerwiederholung."
+>
+  <style>
+    .trainer-tabs {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+    .trainer-tab {
+      flex: 1;
+      min-width: 200px;
+      padding: 14px 20px;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      background: #f0f0f0;
+      color: #555;
+    }
+    .trainer-tab.active {
+      background: #667eea;
+      color: white;
+      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+    }
+    .trainer-tab:hover:not(.active) {
+      background: #e0e0f0;
+      color: #333;
+    }
+    .module-desc {
+      background: #f0f0ff;
+      border-left: 4px solid #667eea;
+      padding: 14px 18px;
+      border-radius: 4px;
+      margin-bottom: 25px;
+      color: #555;
+      font-size: 0.95rem;
+      line-height: 1.6;
+    }
+    .start-btn {
+      background: #667eea;
+      color: white;
+      padding: 18px 44px;
+      font-size: 1.3rem;
+      border: none;
+      border-radius: 50px;
+      cursor: pointer;
+      font-weight: bold;
+      box-shadow: 0 4px 15px rgba(102, 126, 234, 0.35);
+      transition: transform 0.2s, background 0.2s;
+    }
+    .start-btn:hover {
+      transform: scale(1.04);
+      background: #5a6fd6;
+    }
+    .quiz-mark-btn {
+      background: transparent;
+      border: 2px solid #f59e0b;
+      color: #f59e0b;
+      padding: 8px 15px;
+      border-radius: 20px;
+      font-size: 0.9rem;
+      font-weight: bold;
+      cursor: pointer;
+      margin-bottom: 15px;
+      display: inline-block;
+      transition: 0.2s;
+    }
+    .quiz-mark-btn.marked {
+      background: #f59e0b;
+      color: white;
+    }
+    .options-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+    }
+    @media (max-width: 600px) {
+      .options-grid { grid-template-columns: 1fr; }
+      .trainer-tab { font-size: 0.9rem; padding: 12px 14px; }
+    }
+    .quiz-option-btn {
+      background: #fff;
+      border: 2px solid #e5e7eb;
+      border-radius: 12px;
+      padding: 18px;
+      font-size: 1rem;
+      color: #4b5563;
+      cursor: pointer;
+      text-align: left;
+      display: flex;
+      align-items: center;
+      width: 100%;
+      transition: border-color 0.2s, background 0.2s;
+    }
+    .quiz-option-btn:hover:not(:disabled) {
+      border-color: #667eea;
+      background: #f0f0ff;
+    }
+    .quiz-option-btn.correct {
+      background: #d1fae5 !important;
+      border-color: #10b981 !important;
+      color: #065f46 !important;
+    }
+    .quiz-option-btn.wrong {
+      background: #fee2e2 !important;
+      border-color: #ef4444 !important;
+      color: #991b1b !important;
+    }
+    .quiz-next-btn {
+      background: #667eea;
+      color: white;
+      width: 100%;
+      border: none;
+      padding: 16px;
+      border-radius: 10px;
+      font-size: 1.1rem;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 25px;
+      display: none;
+      transition: background 0.2s;
+    }
+    .quiz-next-btn:hover { background: #5a6fd6; }
+    .result-card {
+      padding: 12px 15px;
+      margin-bottom: 8px;
+      border-radius: 4px;
+      border-left: 4px solid;
+    }
+    .result-card.wrong-card { background: #fff5f5; border-color: #ef4444; }
+    .result-card.marked-card { background: #fffbeb; border-color: #f59e0b; }
+    .action-btn {
+      padding: 14px 26px;
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
+      border: none;
+      font-size: 1rem;
+      margin: 5px;
+      transition: opacity 0.2s;
+    }
+    .action-btn:hover { opacity: 0.88; }
+    .btn-retry { background: #667eea; color: white; }
+    .btn-restart { background: #6b7280; color: white; }
+  </style>
+
+  <h2 class="section-title">Vokabel-Trainer</h2>
+  <p style="color:#666; margin-bottom:25px; line-height:1.7;">
+    Teste dein Wissen zu KI-Fachbegriffen – mit Audioaussprache und automatischer Fehlerwiederholung.
+    Wähle ein Modul:
+  </p>
+
+  <!-- Tab Navigation -->
+  <div class="trainer-tabs">
+    <button id="tab-iso" class="trainer-tab active" onclick="switchTab('iso')">
+      📋 ISO 42001 Fachvokabeln
+    </button>
+    <button id="tab-biz" class="trainer-tab" onclick="switchTab('biz')">
+      🇬🇧 Hilfsvokabeln (Business English)
+    </button>
+  </div>
+
+  <!-- Module Description -->
+  <div id="module-desc" class="module-desc">
+    <strong>ISO 42001 Fachvokabeln:</strong> Rund 200 englische KI-Management-Begriffe aus der ISO 42001 Norm –
+    mit Audioaussprache und deutschen Übersetzungen. Ideal zur Zertifizierungsvorbereitung.
+  </div>
+
+  <!-- START SCREEN -->
+  <div id="start-screen" style="text-align:center; padding:40px 20px;">
+    <div id="start-icon" style="font-size:3rem; margin-bottom:15px;">📋</div>
+    <h3 id="start-title" style="font-size:1.5rem; color:#1f2937; margin-bottom:10px;">ISO 42001 Audio-Trainer</h3>
+    <p id="start-subdesc" style="color:#6b7280; margin-bottom:8px;">Englischer Begriff wird vorgelesen → Wähle die deutsche Bedeutung</p>
+    <p style="color:#9ca3af; font-size:0.85rem; margin-bottom:30px;">Stelle sicher, dass dein Ton aktiviert ist.</p>
+    <button class="start-btn" onclick="startGame()">▶ Training starten</button>
+  </div>
+
+  <!-- QUIZ INTERFACE -->
+  <div id="quiz-interface" style="display:none;">
+    <div style="display:flex; justify-content:space-between; padding:10px 14px; background:#f9fafb; border-radius:8px; margin-bottom:15px; font-weight:bold; color:#374151;">
+      <span>Punkte: <span id="score">0</span></span>
+      <span>Frage: <span id="current">1</span> / <span id="total">0</span></span>
+    </div>
+    <div id="mode-indicator" style="text-align:center; color:#6b7280; font-size:0.88rem; margin-bottom:20px;"></div>
+
+    <div style="margin-bottom:25px; border-left:5px solid #667eea; padding-left:15px;">
+      <button id="mark-btn" class="quiz-mark-btn" onclick="toggleMark()">★ Auf die Merkliste (Unsicher)</button>
+      <div style="font-size:0.85rem; text-transform:uppercase; color:#667eea; font-weight:bold; margin-bottom:8px; letter-spacing:0.5px;">
+        <span id="question-label">Englischer Fachbegriff</span>
+        <span style="font-size:0.8rem; color:#9ca3af; font-weight:normal; margin-left:10px;">(🔊 Klick zum Wiederholen)</span>
+      </div>
+      <div id="question-text" onclick="replayAudio()"
+        style="font-size:1.8rem; font-weight:800; color:#1f2937; line-height:1.3; cursor:pointer;">
+        Lade...
+      </div>
+    </div>
+
+    <div id="options-container" class="options-grid"></div>
+
+    <button id="next-btn" class="quiz-next-btn" onclick="nextQuestion()">Nächste Frage →</button>
+  </div>
+
+  <script is:inline>
+    // ============================================================
+    // DATENBANK: ISO 42001
+    // ============================================================
+    const DB_ISO = [
+      { t: "Inception", d: "Konzeptionsphase" },
+      { t: "Assessing impacts for AI systems", d: "Folgenabschätzung für KI-Systeme" },
+      { t: "Acceptable Risk", d: "Tragbares Risiko (+: akzeptables Risiko)" },
+      { t: "Accountability", d: "Zurechenbarkeit / Rechenschaftspflicht (+: Verantwortlichkeit)" },
+      { t: "Accountability Framework", d: "Verantwortlichkeitsrahmen / Zurechenbarkeitsstruktur" },
+      { t: "Accreditation", d: "Akkreditierung (+: Anerkennung / Zulassung)" },
+      { t: "Adequacy", d: "Angemessenheit / Zweckmäßigkeit (+: 'reicht das aus?')" },
+      { t: "Adversarial Attack", d: "Gegnerischer Angriff / Manipulationsangriff" },
+      { t: "Adverse Impacts", d: "Nachteilige Auswirkungen / Schädliche Folgen" },
+      { t: "AI Authority", d: "KI-Aufsichtsbehörde / Regulierer" },
+      { t: "AI controls", d: "KI-Steuerungsmaßnahmen (+: Controls/Maßnahmen)" },
+      { t: "AI Customer", d: "KI-Kunde / KI-Abnehmer" },
+      { t: "AI Governance", d: "KI-Governance / KI-Steuerungsrahmen" },
+      { t: "AI Hallucinations", d: "KI-Halluzinationen / Konfabulationen (+: Erfindungen)" },
+      { t: "AI Inference", d: "KI-Inferenz / Modellanwendung" },
+      { t: "AI Lifecycle", d: "KI-Lebenszyklus" },
+      { t: "AI objectives", d: "KI-Ziele" },
+      { t: "AI Officer", d: "KI-Beauftragter / KI-Verantwortlicher" },
+      { t: "AI Partner", d: "KI-Partner / KI-Dienstleister" },
+      { t: "AI Policy", d: "KI-Richtlinie / KI-Leitlinie" },
+      { t: "AI Producer", d: "KI-Entwickler / KI-Hersteller" },
+      { t: "AI Provider", d: "KI-Anbieter / KI-Bereitsteller" },
+      { t: "AI Register", d: "KI-Register / KI-Verzeichnis" },
+      { t: "AI Subject", d: "KI-Betroffener / von KI betroffene Person" },
+      { t: "AI System", d: "KI-System" },
+      { t: "AI system impact assessment", d: "KI-System-Folgenabschätzung" },
+      { t: "AI System Lifecycle", d: "KI-System-Lebenszyklus" },
+      { t: "AIMS", d: "KI-Managementsystem" },
+      { t: "AIMS Scope Document", d: "Geltungsbereich-Dokument (+: Scope-Dokument)" },
+      { t: "Analysis", d: "Analyse / Auswertung" },
+      { t: "Annex A", d: "Normativer Referenzkatalog" },
+      { t: "Annex B", d: "Informative Leitlinien" },
+      { t: "Annex C.2", d: "Risikoquellen und KI-Risiken" },
+      { t: "Annex A.4", d: "Ressourcen für KI-Systeme" },
+      { t: "Annex D.2", d: "Integration mit anderen ISO-Normen" },
+      { t: "Audit", d: "Prüfung / Systematische Überprüfung" },
+      { t: "Audit Criteria", d: "Auditmaßstäbe / Prüfkriterien" },
+      { t: "Audit Logs", d: "Prüfprotokolle / Systemprotokolle" },
+      { t: "Audit Program", d: "Auditprogramm" },
+      { t: "Audit Scope", d: "Audit-Umfang / Prüfungsumfang" },
+      { t: "Audit Trail", d: "Lückenlose Nachvollziehbarkeit / Prüfpfad" },
+      { t: "Authorization", d: "Genehmigung / Ermächtigung (+: Berechtigung)" },
+      { t: "Augmented Intelligence", d: "Erweiterte / Angereicherte Intelligenz" },
+      { t: "Autonomy", d: "Autonomie / Eigenständigkeit" },
+      { t: "Decommissioning", d: "Außerbetriebnahme / Stilllegung" },
+      { t: "Awareness", d: "Bewusstsein / KI-Bewusstsein der Mitarbeitenden" },
+      { t: "Awareness Plan", d: "Bewusstseinsplan / Kommunikationsplan für KI-Awareness" },
+      { t: "Bias", d: "Systematische Verzerrung / Voreingenommenheit" },
+      { t: "Bias Mitigation", d: "Bias-Minderung / Verzerrungsreduzierung" },
+      { t: "Black Box / White Box", d: "Undurchsichtiges / Durchsichtiges Modell" },
+      { t: "Boundaries", d: "Systemgrenzen / Abgrenzung" },
+      { t: "Buy-in", d: "Akzeptanz / Unterstützung / Zustimmung" },
+      { t: "Certification Audit", d: "Zertifizierungsaudit / Konformitätsprüfung" },
+      { t: "Certification Body", d: "Zertifizierungsstelle / Zertifizierungsorganisation" },
+      { t: "Capability", d: "Fähigkeit / Kapazität (+: Leistungsfähigkeit)" },
+      { t: "Clause 10.1", d: "Fortlaufende Verbesserung" },
+      { t: "Clause 5.1", d: "Führung und Verpflichtung" },
+      { t: "Clause 5.3", d: "Rollen, Verantwortlichkeiten und Befugnisse" },
+      { t: "Clause 6.1.4", d: "KI-System-Folgenabschätzung" },
+      { t: "Clause 6.2", d: "KI-Ziele und Planung" },
+      { t: "Clause 6.3", d: "Planung von Änderungen" },
+      { t: "Clause 7.1", d: "Ressourcen" },
+      { t: "Clause 7.2", d: "Kompetenz" },
+      { t: "Clause 7.5", d: "Dokumentierte Information / Dokumentenlenkung" },
+      { t: "Clause 8", d: "Betrieb" },
+      { t: "Clause 8.1", d: "Betriebliche Planung und Steuerung" },
+      { t: "Clause 8.2", d: "KI-Risikobeurteilung im Betrieb" },
+      { t: "Clause 8.3", d: "KI-Risikobehandlung im Betrieb" },
+      { t: "Clause 9.1", d: "Überwachung, Messung, Analyse und Bewertung" },
+      { t: "Clause 9.2", d: "Internes Audit" },
+      { t: "Clause 9.3", d: "Management Review / Managementbewertung" },
+      { t: "CNN", d: "Convolutional Neural Network / Faltendes Neuronales Netz" },
+      { t: "Commissioning", d: "Formelle Inbetriebnahme / Systemabnahme" },
+      { t: "Commitment", d: "Verpflichtung / Engagement (+: Zusage)" },
+      { t: "Communication", d: "Kommunikation – Clause 7.4" },
+      { t: "Competence", d: "Kompetenz / Fachliche Befähigung" },
+      { t: "Compliance", d: "Konformität / Normerfüllung (+: Regelkonformität)" },
+      { t: "Compliance Obligations", d: "Einhaltungsverpflichtungen / Bindende Anforderungen" },
+      { t: "Computing", d: "Rechenressourcen / Rechenkapazität" },
+      { t: "Concealing", d: "Verschleierung / Verbergen" },
+      { t: "Confidentiality, Integrity, and Availability", d: "CIA-Triade – Vertraulichkeit, Integrität und Verfügbarkeit" },
+      { t: "Conformity Assessment", d: "Konformitätsbewertung / Konformitätsnachweis" },
+      { t: "Consent", d: "Einwilligung / Zustimmung (+: Freigabe)" },
+      { t: "Consequence", d: "Schadensausmaß / Auswirkung" },
+      { t: "Constraint", d: "Einschränkung / Beschränkung (+: Begrenzung)" },
+      { t: "Context of the Organization", d: "Organisationskontext / Unternehmensumfeld" },
+      { t: "Continual Improvement", d: "Fortlaufende Verbesserung / Kontinuierliche Weiterentwicklung" },
+      { t: "Continuous Optimization", d: "Kontinuierliche Optimierung / Laufende Modellanpassung" },
+      { t: "Control", d: "Maßnahme / Steuerungsmechanismus" },
+      { t: "Correction vs. Corrective Action", d: "Korrektur vs. Korrekturmaßnahme" },
+      { t: "Corrective Action", d: "Korrekturmaßnahme / Ursachenbehebung" },
+      { t: "Data", d: "Daten als Ressource" },
+      { t: "Data Bias", d: "Datenverzerrung / Datenseitige Voreingenommenheit" },
+      { t: "Data Drift", d: "Datenverschiebung / Modellverschiebung" },
+      { t: "Data Governance", d: "Daten-Governance / Datensteuerungsrahmen" },
+      { t: "Data Labeling", d: "Datenannotation / Datenkennzeichnung" },
+      { t: "Data Management Process", d: "Datenmanagementprozess / Datenbewirtschaftung" },
+      { t: "Data Minimization", d: "Datenminimierung / Datensparsamkeit" },
+      { t: "Data Poisoning", d: "Datenvergiftung / Trainingsmanipulation" },
+      { t: "Data Preparation", d: "Datenaufbereitung / Datenvorbereitung" },
+      { t: "Data Provenance", d: "Datenherkunft / Datenabstammung" },
+      { t: "Data Quality Requirements", d: "Datenqualitätsanforderungen" },
+      { t: "Data Retention Policy", d: "Datenaufbewahrungsrichtlinie / Speicherfristenregelung" },
+      { t: "Data Subject Rights", d: "Betroffenenrechte / Rechte der betroffenen Person" },
+      { t: "Deep Learning", d: "Tiefes Lernen / Tiefenlernen" },
+      { t: "Deployment", d: "Produktivsetzung / Inbetriebnahme" },
+      { t: "Deployment Plan", d: "Bereitstellungsplan / Inbetriebnahmeplan" },
+      { t: "Design stage", d: "Entwurfsphase / Designphase" },
+      { t: "Deviation", d: "Abweichung / Regelverstoß" },
+      { t: "Disposition", d: "Entsorgung / Datenvernichtung" },
+      { t: "Documented Information", d: "Dokumentierte Information / Gelenkte Dokumentation" },
+      { t: "Documents", d: "Dokumente / Vorgabedokumente" },
+      { t: "Due Diligence", d: "Sorgfaltspflicht / Angemessene Prüfung" },
+      { t: "Effectiveness", d: "Wirksamkeit / Zielerreichung" },
+      { t: "Enforcement Mechanisms", d: "Durchsetzungsmechanismen / Sanktionsinstrumente" },
+      { t: "Ethical Considerations", d: "Ethische Abwägungen / Ethische Überlegungen" },
+      { t: "Ethical Impact Assessment", d: "Ethische Folgenabschätzung" },
+      { t: "Ethically Sourced Datasets", d: "Ethisch beschaffte Datensätze" },
+      { t: "EU AI Act", d: "KI-Verordnung der EU" },
+      { t: "Evaluation", d: "Bewertung / Beurteilung (+: Auswertung)" },
+      { t: "Event Logging", d: "Ereignisprotokollierung / Systemprotokollierung" },
+      { t: "Evidence", d: "Nachweis / Beleg" },
+      { t: "Executive Sponsorship", d: "Managementunterstützung / Leitungsunterstützung" },
+      { t: "Explainability", d: "Erklärbarkeit / Nachvollziehbarkeit von KI-Entscheidungen" },
+      { t: "Explicit Programming", d: "Regelbasierte Programmierung" },
+      { t: "External stakeholders", d: "Externe Interessengruppen / Externe Betroffene" },
+      { t: "Fairness", d: "Fairness / Gerechtigkeit" },
+      { t: "Feasibility", d: "Machbarkeit / Durchführbarkeit" },
+      { t: "FFNN", d: "Feed-forward Neural Network / Vorwärtsgerichtetes Neuronales Netz" },
+      { t: "Fine-tuning", d: "Feinanpassung / Nachjustierung" },
+      { t: "Foreseeable Misuse", d: "Vorhersehbarer Missbrauch / Vorhersehbare Fehlanwendung" },
+      { t: "Foundation Model", d: "Basismodell / Grundlagenmodell" },
+      { t: "Gap Analysis", d: "Lückenanalyse / Ist-Soll-Vergleich" },
+      { t: "Generative AI", d: "Generative KI / Erzeugende KI" },
+      { t: "Governance Framework", d: "Steuerungsrahmen / Governance-Architektur" },
+      { t: "Large Language Model", d: "Großes Sprachmodell (LLM)" },
+      { t: "Harmonization", d: "Harmonisierung / Normenangleichung" },
+      { t: "High-Level Structure", d: "Harmonisierte Grundstruktur (HLS)" },
+      { t: "HR Procedure", d: "Personalverfahren / Kompetenzmanagement-Prozess" },
+      { t: "Human Oversight", d: "Menschliche Überwachung / Menschliche Aufsicht" },
+      { t: "Hyperparameter", d: "Modell-Einstellungswerte / Steuerungsgrößen" },
+      { t: "Impact Assessment", d: "Folgenabschätzung / Wirkungsanalyse" },
+      { t: "Incident", d: "Vorfall / Sicherheitsvorfall" },
+      { t: "Incident Management", d: "Vorfallmanagement / Störungsmanagement" },
+      { t: "Incident Response", d: "Vorfallreaktion / Sofortmaßnahmen" },
+      { t: "Intended Use", d: "Bestimmungsgemäße Verwendung / Beabsichtigter Einsatzzweck" },
+      { t: "Interested Parties", d: "Interessierte Parteien / Stakeholder" },
+      { t: "Internal Audit", d: "Internes Audit / Interne Revision" },
+      { t: "ISO 23894", d: "KI-Risikomanagement" },
+      { t: "ISO 27001 / 27701", d: "Informationssicherheit / Datenschutz" },
+      { t: "ISO 31000", d: "Risikomanagement-Leitlinien" },
+      { t: "ISO 42005", d: "KI-System-Folgenabschätzung" },
+      { t: "ISO/IEC 22989", d: "KI-Konzepte und Terminologie" },
+      { t: "ISO/IEC 42001:2023", d: "KI-Managementsystem-Norm" },
+      { t: "KPI", d: "Leistungskennzahl / Key Performance Indicator" },
+      { t: "Critical Success Factors", d: "Kritische Erfolgsfaktoren" },
+      { t: "Liability", d: "Haftung / Haftungsverantwortung" },
+      { t: "Likelihood", d: "Eintrittswahrscheinlichkeit / Häufigkeit" },
+      { t: "Likelihood and Consequence Scales", d: "Bewertungsskalen für Risiken" },
+      { t: "Logs", d: "Protokolle / Aufzeichnungen" },
+      { t: "Maintenance", d: "Aufrechterhaltung / Systempflege" },
+      { t: "Major Nonconformity vs. Minor Nonconformity", d: "Schwerwiegende vs. Geringfügige Nichtkonformität" },
+      { t: "Management Review", d: "Managementbewertung / Leitungsbewertung" },
+      { t: "Machine Learning", d: "Maschinelles Lernen" },
+      { t: "Maturity", d: "Reifegrad" },
+      { t: "Mitigation", d: "Minderung / Abschwächung (+: Gegenmaßnahme)" },
+      { t: "Model Stealing", d: "Modell-Diebstahl / Model Extraction" },
+      { t: "Monitoring", d: "Überwachung / Laufende Beobachtung" },
+      { t: "Needs and Expectations", d: "Anforderungen und Erwartungen" },
+      { t: "Neural Network", d: "Neuronales Netz" },
+      { t: "NIST AI RMF", d: "US-amerikanisches KI-Risikomanagement-Framework" },
+      { t: "Nonconformity", d: "Nichtkonformität / Normabweichung (+: Abweichung)" },
+      { t: "Normative vs. Informative", d: "Normativ vs. Informativ (+: Pflicht vs. Empfehlung)" },
+      { t: "Objective Evidence", d: "Objektiver Nachweis / Belastbarer Beleg (+: prüfbarer Beweis)" },
+      { t: "Obligation", d: "Verpflichtung / Verbindlichkeit (+: Pflicht)" },
+      { t: "Observation", d: "Auditbeobachtung / Feststellung (+: Hinweis)" },
+      { t: "Ongoing operations", d: "Laufender Betrieb / Tagesbetrieb" },
+      { t: "Outcome", d: "Ergebnis / Resultat / Output" },
+      { t: "Outsourced Process", d: "Ausgelagerter Prozess / Fremdvergebener Prozess" },
+      { t: "Overfitting / Underfitting", d: "Überanpassung / Unteranpassung" },
+      { t: "PDCA-Zyklus", d: "Plan-Do-Check-Act / Deming-Zyklus" },
+      { t: "Planning of changes", d: "Änderungsplanung / Change Management" },
+      { t: "Presumption of Conformity", d: "Konformitätsvermutung / Vermutete Normkonformität" },
+      { t: "Preventive Action", d: "Vorbeugemaßnahme / Präventivmaßnahme" },
+      { t: "Privacy by Design / Security by Design", d: "Datenschutz/Sicherheit durch Gestaltung" },
+      { t: "Process Approach", d: "Prozessansatz / Prozessorientierung" },
+      { t: "Reasonably foreseeable misuse", d: "Vernünftigerweise vorhersehbarer Missbrauch" },
+      { t: "Records", d: "Aufzeichnungen / Nachweisdokumente" },
+      { t: "Regulatory Compliance", d: "Regulatorische Konformität / Gesetzeskonformität" },
+      { t: "Reinforcement Learning", d: "Bestärkendes Lernen" },
+      { t: "Remediation", d: "Behebung / Wiederherstellung / Schadenswiedergutmachung" },
+      { t: "Residual Risk", d: "Restrisiko / Verbleibendes Risiko" },
+      { t: "Responsibility Matrix", d: "Verantwortungsmatrix / RACI-Matrix" },
+      { t: "Responsible Design and Development", d: "Verantwortungsvolle Gestaltung und Entwicklung" },
+      { t: "Retrieval-augmented Generation", d: "RAG / Abrufgestützte Generierung" },
+      { t: "Risk Appetite", d: "Risikobereitschaft" },
+      { t: "Risk Acceptance", d: "Risikoakzeptanz / Bewusste Risikoübernahme" },
+      { t: "Risk Analysis", d: "Risikoanalyse" },
+      { t: "Risk Assessment", d: "Risikobeurteilung / Risikobewertungsprozess" },
+      { t: "Risk Avoidance", d: "Risikovermeidung" },
+      { t: "Risk Criteria", d: "Risikokriterien / Risikoschwellenwerte" },
+      { t: "Risk Evaluation", d: "Risikoevaluierung / Risikoeinstufung" },
+      { t: "Risk Identification", d: "Risikoidentifikation" },
+      { t: "Risk Level", d: "Risikoniveau / Risikostufe" },
+      { t: "Risk Management Framework", d: "Risikomanagement-Rahmenwerk" },
+      { t: "Risk Owner", d: "Risikoeigentümer / Risikoverantwortlicher" },
+      { t: "Risk Reduction", d: "Risikominderung / Risikoreduzierung" },
+      { t: "Risk Register", d: "Risikoregister / Risikodokumentation" },
+      { t: "Risk Treatment", d: "Risikobehandlung" },
+      { t: "Risk Treatment Plan", d: "Risikobehandlungsplan" },
+      { t: "Risk-based Thinking", d: "Risikobasiertes Denken / Risikoorientierter Ansatz" },
+      { t: "Risks and opportunities", d: "Risiken und Chancen" },
+      { t: "RNN", d: "Recurrent Neural Network / Rückgekoppeltes Neuronales Netz" },
+      { t: "Robustness", d: "Robustheit / Widerstandsfähigkeit" },
+      { t: "Root Cause Analysis", d: "Ursachenanalyse / Grundursachenermittlung" },
+      { t: "Scope", d: "Geltungsbereich / Anwendungsbereich" },
+      { t: "Shall / Should / May", d: "Muss / Sollte / Kann – Normsprache" },
+      { t: "Stage 1 Audit / Stage 2 Audit", d: "Stufe-1-Audit / Stufe-2-Audit" },
+      { t: "Stakeholder", d: "Interessengruppe / Anspruchsgruppe" },
+      { t: "Statement of Applicability", d: "Erklärung zur Anwendbarkeit (SoA)" },
+      { t: "Strategic Intent", d: "Strategische Absicht / Strategische Ausrichtung" },
+      { t: "Suitability", d: "Eignung / Zwecktauglichkeit" },
+      { t: "Supervised Learning", d: "Überwachtes Lernen" },
+      { t: "Supplier Compliance", d: "Lieferantenkonformität / Dienstleisterkonformität" },
+      { t: "Surveillance Audit", d: "Überwachungsaudit / Aufrechterhaltungsaudit" },
+      { t: "Technical Documentation", d: "Technische Dokumentation" },
+      { t: "Testing Requirements", d: "Testanforderungen / Prüfkriterien" },
+      { t: "Third Party", d: "Drittpartei / Externe Partei" },
+      { t: "Tooling", d: "Werkzeuge / Entwicklungs- und Betriebswerkzeuge" },
+      { t: "Top Management", d: "Oberste Leitung / Geschäftsleitung" },
+      { t: "Traceability", d: "Rückverfolgbarkeit / Nachvollziehbarkeit" },
+      { t: "Training Data", d: "Trainingsdaten" },
+      { t: "Transformer", d: "Transformer-Architektur" },
+      { t: "Transparency", d: "Transparenz / Offenlegung" },
+      { t: "Trustworthiness", d: "Vertrauenswürdigkeit" },
+      { t: "Unintended Consequences", d: "Unbeabsichtigte Folgen / Unvorhergesehene Auswirkungen" },
+      { t: "Unsupervised Learning", d: "Unüberwachtes Lernen" },
+      { t: "Unwitting Provider", d: "Unwissentlicher Anbieter / Unbeabsichtigter KI-Anbieter" },
+      { t: "Validation", d: "Validierung" },
+      { t: "Verification", d: "Verifizierung" },
+      { t: "Version Control", d: "Versionskontrolle / Versionsverwaltung" },
+      { t: "Vulnerable groups", d: "Gefährdete / Besonders schutzbedürftige Gruppen" },
+    ];
+
+    // ============================================================
+    // DATENBANK: Business English (Hilfsvokabeln Modul 1–6)
+    // ============================================================
+    const DB_BIZ = [
+      { t: "to agree on", d: "sich einigen auf (einen Konsens finden)" },
+      { t: "to govern", d: "steuern, regeln, leiten" },
+      { t: "to ensure", d: "sicherstellen, gewährleisten" },
+      { t: "to prove", d: "beweisen, nachweisen" },
+      { t: "to generate", d: "erzeugen, generieren" },
+      { t: "to incorporate", d: "einbeziehen, integrieren" },
+      { t: "to retrieve", d: "abrufen (Informationen holen)" },
+      { t: "to adjust", d: "anpassen, justieren" },
+      { t: "to predict", d: "vorhersagen" },
+      { t: "to memorize", d: "auswendig lernen / sich merken" },
+      { t: "to spot", d: "entdecken, erkennen" },
+      { t: "to evolve", d: "sich entwickeln (über Zeit)" },
+      { t: "to assess", d: "bewerten, einschätzen" },
+      { t: "to discard", d: "wegwerfen, entsorgen" },
+      { t: "to dedicate", d: "widmen (Zeit/Ressourcen reservieren)" },
+      { t: "to overcome", d: "überwinden (Hindernis bewältigen)" },
+      { t: "Framework", d: "Rahmenwerk, Gerüst" },
+      { t: "Representative", d: "Vertreter" },
+      { t: "Purpose", d: "Zweck, Absicht" },
+      { t: "Entity", d: "Entität, Einheit" },
+      { t: "Reasoning", d: "Argumentation, Schlussfolgerung" },
+      { t: "Reliability", d: "Zuverlässigkeit" },
+      { t: "Obstacle", d: "Hindernis" },
+      { t: "Resolve", d: "Entschlossenheit" },
+      { t: "Guidance", d: "Anleitung, Orientierungshilfe" },
+      { t: "For-profit / Non-profit", d: "Gewinnorientiert / Gemeinnützig" },
+      { t: "Vast", d: "Riesig, gewaltig" },
+      { t: "Repetitive", d: "Wiederholend" },
+      { t: "Distinct", d: "Deutlich, verschieden" },
+      { t: "Clumsy", d: "Ungeschickt, unbeholfen" },
+      { t: "Explicitly", d: "Ausdrücklich" },
+      { t: "Feasible", d: "Machbar, umsetzbar" },
+      { t: "Obsolete", d: "Veraltet, überholt" },
+      { t: "Crucial", d: "Entscheidend, äußerst wichtig" },
+      { t: "Mandatory", d: "Verpflichtend" },
+      { t: "to determine", d: "ermitteln, bestimmen, festlegen" },
+      { t: "to encompass", d: "umfassen, beinhalten" },
+      { t: "to rely on", d: "sich verlassen auf / abhängig sein von" },
+      { t: "to address", d: "adressieren, angehen (Problem behandeln)" },
+      { t: "to establish", d: "etablieren, aufbauen, einrichten" },
+      { t: "to maintain", d: "aufrechterhalten, pflegen" },
+      { t: "to contribute", d: "beitragen" },
+      { t: "to conduct", d: "durchführen (z. B. Audit/Training)" },
+      { t: "to preserve", d: "bewahren, erhalten" },
+      { t: "to dispose of", d: "verfügen über / entsorgen" },
+      { t: "to obtain", d: "erhalten, bekommen" },
+      { t: "to penetrate markets", d: "Märkte durchdringen / erschließen" },
+      { t: "to nominate", d: "ernennen, benennen" },
+      { t: "to allocate", d: "zuweisen, zuteilen" },
+      { t: "to acquire", d: "erwerben, sich aneignen" },
+      { t: "Context", d: "Kontext, Zusammenhang" },
+      { t: "Provisions", d: "Bestimmungen, Vorschriften" },
+      { t: "Supply chain", d: "Lieferkette" },
+      { t: "Department", d: "Abteilung" },
+      { t: "Staff", d: "Belegschaft, Personal" },
+      { t: "Commitment", d: "Engagement, Verpflichtung" },
+      { t: "Intent", d: "Absicht, Vorhaben" },
+      { t: "Revenue", d: "Umsatz, Einnahmen" },
+      { t: "Origin", d: "Herkunft, Ursprung" },
+      { t: "Expertise", d: "Fachwissen, Sachverstand" },
+      { t: "Prevailing", d: "Vorherrschend, geltend" },
+      { t: "Legitimate", d: "Legitim, berechtigt" },
+      { t: "Ongoing", d: "Laufend, fortwährend" },
+      { t: "Consistent", d: "Konsistent, beständig" },
+      { t: "Adequate", d: "Angemessen, ausreichend" },
+      { t: "Inadequately", d: "Unzureichend" },
+      { t: "Verbally", d: "Mündlich" },
+      { t: "Appropriate", d: "Geeignet, passend" },
+      { t: "Proprietary", d: "Firmeneigen, geschützt" },
+      { t: "Essential", d: "Wesentlich, unverzichtbar" },
+      { t: "to comply with", d: "befolgen, einhalten" },
+      { t: "to foresee", d: "vorhersehen" },
+      { t: "to bridge a gap", d: "eine Lücke schließen / überbrücken" },
+      { t: "to configure", d: "konfigurieren, einstellen" },
+      { t: "to retrain", d: "umschulen / neu trainieren" },
+      { t: "to expose", d: "aussetzen, preisgeben" },
+      { t: "to discontinue", d: "einstellen, beenden" },
+      { t: "to justify", d: "rechtfertigen, begründen" },
+      { t: "to manipulate", d: "manipulieren" },
+      { t: "to disrupt", d: "stören, unterbrechen" },
+      { t: "Breach", d: "Verstoß, Bruch" },
+      { t: "Consistency", d: "Beständigkeit, Einheitlichkeit" },
+      { t: "Likelihood", d: "Wahrscheinlichkeit" },
+      { t: "Consequence", d: "Konsequenz, Folge" },
+      { t: "Occurrence", d: "Das Auftreten, Vorkommnis" },
+      { t: "Severity", d: "Schweregrad, Ernsthaftigkeit" },
+      { t: "Reputation", d: "Ruf, Ansehen" },
+      { t: "Lawsuit", d: "Klage, Gerichtsprozess" },
+      { t: "Restriction", d: "Einschränkung" },
+      { t: "Deadline", d: "Frist, Stichtag" },
+      { t: "Transition", d: "Übergang, Wechsel" },
+      { t: "Biased", d: "Voreingenommen, verzerrt" },
+      { t: "Accidental", d: "Versehentlich, zufällig" },
+      { t: "Thorough", d: "Gründlich, sorgfältig" },
+      { t: "Sophisticated", d: "Ausgefeilt, hochentwickelt" },
+      { t: "Severe", d: "Schwerwiegend, heftig" },
+      { t: "Vulnerable", d: "Verwundbar, schutzbedürftig" },
+      { t: "Proactive", d: "Proaktiv, vorausschauend" },
+      { t: "Thoughtful", d: "Durchdacht, besonnen" },
+      { t: "to integrate", d: "integrieren, einbinden" },
+      { t: "to monitor", d: "überwachen, beobachten" },
+      { t: "to emerge", d: "auftauchen, entstehen" },
+      { t: "to flag", d: "markieren, kennzeichnen" },
+      { t: "to carry out", d: "ausführen, erledigen" },
+      { t: "to align with", d: "abstimmen auf, ausrichten an" },
+      { t: "to notify", d: "benachrichtigen" },
+      { t: "to track", d: "verfolgen, nachverfolgen" },
+      { t: "to initiate", d: "initiieren, anstoßen" },
+      { t: "Pattern", d: "Muster, Struktur" },
+      { t: "Evidence", d: "Beweis, Nachweis" },
+      { t: "Findings", d: "Ergebnisse, Befunde" },
+      { t: "Traceability", d: "Rückverfolgbarkeit" },
+      { t: "Confidentiality", d: "Vertraulichkeit" },
+      { t: "Integrity", d: "Integrität (Unversehrtheit)" },
+      { t: "Availability", d: "Verfügbarkeit" },
+      { t: "Refinement", d: "Verfeinerung, Weiterentwicklung" },
+      { t: "Functionality", d: "Funktionalität, Funktionsumfang" },
+      { t: "Gap", d: "Lücke, Abstand" },
+      { t: "Unauthorized", d: "Unbefugt, nicht autorisiert" },
+      { t: "Concrete", d: "Konkret, greifbar" },
+      { t: "Static", d: "Statisch, unverändert" },
+      { t: "Significant", d: "Signifikant, bedeutend" },
+      { t: "Relevant", d: "Relevant, maßgeblich" },
+      { t: "to observe", d: "beobachten" },
+      { t: "to examine", d: "untersuchen, prüfen" },
+      { t: "to investigate", d: "untersuchen, ermitteln" },
+      { t: "to prescribe", d: "vorschreiben, verordnen" },
+      { t: "to fulfill", d: "erfüllen" },
+      { t: "to seize opportunities", d: "Chancen ergreifen / nutzen" },
+      { t: "to stress a point", d: "einen Punkt betonen / hervorheben" },
+      { t: "to eliminate", d: "beseitigen, eliminieren" },
+      { t: "Values", d: "Werte" },
+      { t: "Schedule", d: "Zeitplan" },
+      { t: "Frequency", d: "Häufigkeit" },
+      { t: "Objective", d: "Zielsetzung (Nomen) / sachlich (Adjektiv)" },
+      { t: "Interval", d: "Intervall, Zeitabstand" },
+      { t: "Complaint", d: "Beschwerde" },
+      { t: "Rationale", d: "Logik, Grundgedanke" },
+      { t: "Outcome", d: "Ergebnis, Resultat" },
+      { t: "Oversight", d: "Versehen / Übersehen (oder Aufsicht)" },
+      { t: "Numerical", d: "Numerisch, zahlenmäßig" },
+      { t: "Suitability", d: "Eignung" },
+      { t: "Consequently", d: "Folglich, infolgedessen" },
+      { t: "Timely", d: "Rechtzeitig" },
+      { t: "to decrease", d: "verringern, senken" },
+      { t: "to resort to", d: "zurückgreifen auf (Notlösung)" },
+      { t: "to distinguish", d: "unterscheiden, abgrenzen" },
+      { t: "to procure", d: "beschaffen" },
+      { t: "to troubleshoot", d: "Fehler suchen und beheben" },
+      { t: "to interact", d: "interagieren, zusammenspielen" },
+      { t: "Suggestion", d: "Vorschlag, Anregung" },
+      { t: "Guesswork", d: "Raterei, Mutmaßung" },
+      { t: "Safeguard", d: "Schutzmaßnahme, Sicherung" },
+      { t: "Confusion", d: "Verwirrung, Unklarheit" },
+      { t: "Expectation", d: "Erwartung" },
+      { t: "Intersection", d: "Schnittmenge, Kreuzungspunkt" },
+      { t: "Deviation", d: "Abweichung (vom Standard)" },
+      { t: "Landscape", d: "Landschaft (rechtliches/technisches Umfeld)" },
+      { t: "Obligation", d: "Verpflichtung" },
+      { t: "Limitation", d: "Einschränkung, Begrenzung" },
+      { t: "Particular", d: "Bestimmt, speziell" },
+      { t: "Costly", d: "Kostspielig, teuer" },
+      { t: "Unintended", d: "Unbeabsichtigt" },
+      { t: "Transparent", d: "Transparent, durchsichtig" },
+      { t: "Rapidly", d: "Schnell, rasch" },
+      { t: "Adverse", d: "Nachteilig, widrig" },
+    ];
+
+    // ============================================================
+    // STATE
+    // ============================================================
+    var activeTab = 'iso';
+    var fullDatabase = DB_ISO;
+    var currentPool = [];
+    var mistakes = [];
+    var markedItems = [];
+    var currentQuestion = {};
+    var score = 0;
+    var questionIndex = 0;
+    var isMarked = false;
+
+    // ============================================================
+    // TAB SWITCHING
+    // ============================================================
+    function switchTab(tab) {
+      if (window.speechSynthesis) window.speechSynthesis.cancel();
+
+      activeTab = tab;
+      fullDatabase = tab === 'iso' ? DB_ISO : DB_BIZ;
+
+      // Tab Button Styling
+      var isoBtn = document.getElementById('tab-iso');
+      var bizBtn = document.getElementById('tab-biz');
+      if (tab === 'iso') {
+        isoBtn.classList.add('active');
+        bizBtn.classList.remove('active');
+      } else {
+        bizBtn.classList.add('active');
+        isoBtn.classList.remove('active');
+      }
+
+      // Module Description
+      var desc = document.getElementById('module-desc');
+      if (tab === 'iso') {
+        desc.innerHTML = '<strong>ISO 42001 Fachvokabeln:</strong> Rund 200 englische KI-Management-Begriffe aus der ISO 42001 Norm – mit Audioaussprache und deutschen Übersetzungen. Ideal zur Zertifizierungsvorbereitung.';
+        document.getElementById('start-icon').innerText = '📋';
+        document.getElementById('start-title').innerText = 'ISO 42001 Audio-Trainer';
+        document.getElementById('start-subdesc').innerText = 'Englischer Begriff wird vorgelesen → Wähle die deutsche Bedeutung';
+      } else {
+        desc.innerHTML = '<strong>Hilfsvokabeln – Business English (Modul 1–6):</strong> Rund 165 englische Verben, Nomen und Adjektive aus dem Business-Kontext – falls dein Englisch etwas eingerostet ist.';
+        document.getElementById('start-icon').innerText = '🇬🇧';
+        document.getElementById('start-title').innerText = 'Business English Trainer';
+        document.getElementById('start-subdesc').innerText = 'Englisches Wort wird vorgelesen → Wähle die deutsche Bedeutung';
+      }
+
+      // Zurück zum Startscreen
+      document.getElementById('quiz-interface').style.display = 'none';
+      document.getElementById('start-screen').style.display = 'block';
+    }
+
+    // ============================================================
+    // AUDIO
+    // ============================================================
+    function speakEnglish(text) {
+      if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+        var utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = 'en-US';
+        utterance.rate = 0.9;
+        window.speechSynthesis.speak(utterance);
+      }
+    }
+
+    function replayAudio() {
+      if (currentQuestion && currentQuestion.t) speakEnglish(currentQuestion.t);
+    }
+
+    // ============================================================
+    // QUIZ ENGINE
+    // ============================================================
+    function shuffle(array) {
+      for (var i = array.length - 1; i > 0; i--) {
+        var j = Math.floor(Math.random() * (i + 1));
+        var temp = array[i]; array[i] = array[j]; array[j] = temp;
+      }
+    }
+
+    function startGame() {
+      document.getElementById('start-screen').style.display = 'none';
+      document.getElementById('quiz-interface').style.display = 'block';
+      document.getElementById('question-label').innerText =
+        activeTab === 'iso' ? 'Englischer Fachbegriff' : 'Englisch';
+      initApp();
+    }
+
+    function initApp() {
+      mistakes = [];
+      markedItems = [];
+      currentPool = fullDatabase.slice();
+      startRound('Modus: Alle Begriffe (' + currentPool.length + ')');
+    }
+
+    function retryMistakes() {
+      var uniqueSet = {};
+      var combined = mistakes.concat(markedItems);
+      for (var i = 0; i < combined.length; i++) uniqueSet[combined[i].t] = combined[i];
+      currentPool = Object.values(uniqueSet);
+      if (currentPool.length === 0) { alert('Keine Fehler oder markierten Begriffe!'); return; }
+      mistakes = [];
+      markedItems = [];
+      rebuildQuizUI();
+      startRound('Modus: Fehler & Markierte (' + currentPool.length + ')');
+    }
+
+    function startRound(modeTitle) {
+      score = 0;
+      questionIndex = 0;
+      shuffle(currentPool);
+      document.getElementById('mode-indicator').innerText = modeTitle;
+      document.getElementById('total').innerText = currentPool.length;
+      loadQuestion();
+    }
+
+    function loadQuestion() {
+      document.getElementById('next-btn').style.display = 'none';
+      document.getElementById('options-container').innerHTML = '';
+
+      isMarked = false;
+      var markBtn = document.getElementById('mark-btn');
+      markBtn.classList.remove('marked');
+      markBtn.disabled = false;
+      markBtn.innerText = '★ Auf die Merkliste (Unsicher)';
+
+      if (questionIndex >= currentPool.length) { finishQuiz(); return; }
+
+      currentQuestion = currentPool[questionIndex];
+      document.getElementById('current').innerText = questionIndex + 1;
+      document.getElementById('question-text').innerText = currentQuestion.t;
+      speakEnglish(currentQuestion.t);
+
+      var answers = [currentQuestion.d];
+      var wrongAnswer, safety = 0;
+      do {
+        wrongAnswer = fullDatabase[Math.floor(Math.random() * fullDatabase.length)].d;
+        safety++;
+      } while (wrongAnswer === currentQuestion.d && safety < 100);
+      answers.push(wrongAnswer);
+      shuffle(answers);
+
+      var container = document.getElementById('options-container');
+      answers.forEach(function(ans, index) {
+        var btn = document.createElement('button');
+        btn.className = 'quiz-option-btn';
+        var letter = index === 0 ? 'A' : 'B';
+        btn.innerHTML =
+          '<span style="font-weight:900;font-size:1.2rem;color:#667eea;margin-right:12px;min-width:25px;">' + letter + '</span>' +
+          '<span>' + ans + '</span>';
+        var isCorrect = (ans === currentQuestion.d);
+        btn.onclick = function() { checkAnswer(btn, isCorrect); };
+        container.appendChild(btn);
+      });
+    }
+
+    function toggleMark() {
+      var btn = document.getElementById('mark-btn');
+      isMarked = !isMarked;
+      if (isMarked) {
+        btn.classList.add('marked');
+        btn.innerText = '★ Markiert für Wiederholung';
+        markedItems.push(currentQuestion);
+      } else {
+        btn.classList.remove('marked');
+        btn.innerText = '★ Auf die Merkliste (Unsicher)';
+        markedItems = markedItems.filter(function(i) { return i.t !== currentQuestion.t; });
+      }
+    }
+
+    function checkAnswer(btn, isCorrect) {
+      var buttons = document.querySelectorAll('.quiz-option-btn');
+      buttons.forEach(function(b) { b.disabled = true; });
+      document.getElementById('mark-btn').disabled = true;
+
+      if (isCorrect) {
+        btn.classList.add('correct');
+        score++;
+        document.getElementById('score').innerText = score;
+      } else {
+        btn.classList.add('wrong');
+        mistakes.push(currentQuestion);
+        buttons.forEach(function(b) {
+          if (b.innerText.indexOf(currentQuestion.d) !== -1) b.classList.add('correct');
+        });
+      }
+      document.getElementById('next-btn').style.display = 'block';
+    }
+
+    function nextQuestion() {
+      if (window.speechSynthesis) window.speechSynthesis.cancel();
+      questionIndex++;
+      loadQuestion();
+    }
+
+    function finishQuiz() {
+      var container = document.getElementById('quiz-interface');
+      var allToRepeat = {};
+      mistakes.forEach(function(i) { allToRepeat[i.t] = { item: i, type: 'wrong' }; });
+      markedItems.forEach(function(i) { if (!allToRepeat[i.t]) allToRepeat[i.t] = { item: i, type: 'marked' }; });
+      var repeatList = Object.values(allToRepeat);
+
+      var html = '<div style="text-align:center; padding:20px;">' +
+        '<h2 style="color:#667eea; margin-bottom:15px;">Training beendet! &#127881;</h2>' +
+        '<p style="font-size:1.5rem; font-weight:bold;">Ergebnis: ' + score + ' / ' + currentPool.length + '</p>' +
+        '<p style="color:#6b7280; margin-bottom:30px;">' + Math.round((score / currentPool.length) * 100) + '% richtig</p>';
+
+      if (repeatList.length > 0) {
+        html += '<h3 style="text-align:left;color:#374151;margin-bottom:12px;">Zur Wiederholung (' + repeatList.length + '):</h3>';
+        repeatList.forEach(function(entry) {
+          var cssClass = entry.type === 'wrong' ? 'result-card wrong-card' : 'result-card marked-card';
+          var safeT = entry.item.t.replace(/'/g, '&#39;');
+          html += '<div class="' + cssClass + '">' +
+            '<span style="font-weight:bold;cursor:pointer;" onclick="speakEnglish(\'' + safeT + '\')">&#128266; ' + entry.item.t + '</span>' +
+            '<br><span style="color:#059669;font-weight:600;">&#8594; ' + entry.item.d + '</span>' +
+            '</div>';
+        });
+        html += '<div style="margin-top:25px;">' +
+          '<button class="action-btn btn-retry" onclick="retryMistakes()">Fehler & Markierte wiederholen &#8594;</button>' +
+          '<button class="action-btn btn-restart" onclick="initApp()">Alles neu starten</button>' +
+          '</div>';
+      } else {
+        html += '<p style="color:#059669;font-weight:bold;font-size:1.2rem;">Perfekt! Keine Fehler. &#127942;</p>' +
+          '<button class="action-btn btn-retry" onclick="initApp()" style="margin-top:20px;">Nochmal spielen</button>';
+      }
+
+      html += '</div>';
+      container.innerHTML = html;
+    }
+
+    function rebuildQuizUI() {
+      var container = document.getElementById('quiz-interface');
+      container.innerHTML =
+        '<div style="display:flex; justify-content:space-between; padding:10px 14px; background:#f9fafb; border-radius:8px; margin-bottom:15px; font-weight:bold; color:#374151;">' +
+          '<span>Punkte: <span id="score">0</span></span>' +
+          '<span>Frage: <span id="current">1</span> / <span id="total">0</span></span>' +
+        '</div>' +
+        '<div id="mode-indicator" style="text-align:center; color:#6b7280; font-size:0.88rem; margin-bottom:20px;"></div>' +
+        '<div style="margin-bottom:25px; border-left:5px solid #667eea; padding-left:15px;">' +
+          '<button id="mark-btn" class="quiz-mark-btn" onclick="toggleMark()">&#9733; Auf die Merkliste (Unsicher)</button>' +
+          '<div style="font-size:0.85rem; text-transform:uppercase; color:#667eea; font-weight:bold; margin-bottom:8px; letter-spacing:0.5px;">' +
+            '<span id="question-label">' + (activeTab === 'iso' ? 'Englischer Fachbegriff' : 'Englisch') + '</span>' +
+            '<span style="font-size:0.8rem; color:#9ca3af; font-weight:normal; margin-left:10px;">(&#128266; Klick zum Wiederholen)</span>' +
+          '</div>' +
+          '<div id="question-text" onclick="replayAudio()" style="font-size:1.8rem; font-weight:800; color:#1f2937; line-height:1.3; cursor:pointer;">Lade...</div>' +
+        '</div>' +
+        '<div id="options-container" class="options-grid"></div>' +
+        '<button id="next-btn" class="quiz-next-btn" onclick="nextQuestion()">N&#228;chste Frage &#8594;</button>';
+    }
+  </script>
+</Layout>
